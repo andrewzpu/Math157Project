@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+  MathJax = { 
+    tex: {
+		    inlineMath: [['$','$'], ['\\(','\\)']]
+	} }
+</script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+<meta name="generator" content="plasTeX" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Inclusion–Exclusion Principle</title>
+<link rel="prev" href="index.html" title="FinalProject" />
+<link rel="up" href="index.html" title="FinalProject" />
+<link rel="stylesheet" href="styles/theme-white.css" />
+<link rel="stylesheet" href="styles/amsthm.css" />
+<link rel="stylesheet" href="styles/extra_styles.css" />
+</head>
+
+<body>
+<header>
+<svg  id="toc-toggle" class="icon icon-list-numbered "><use xlink:href="symbol-defs.svg#icon-list-numbered"></use></svg>
+<h1 id="doc_title"><a href="index.html">FinalProject</a></h1>
+</header>
+
+<div class="wrapper">
+<nav class="toc">
+<ul class="sub-toc-0">
+<li class=" active current">
+  <a href="sect0001.html"><span class="toc_ref">1</span> <span class="toc_entry">The Inclusion–Exclusion Principle</span></a>
+  <span class="expand-toc">▼</span>
+  <ul class="sub-toc-1 active">
+     <li class="">
+  <a href="sect0001.html#a0000000003"><span class="toc_ref">1.1</span> <span class="toc_entry">Overview</span></a>
+ </li>
+<li class="">
+  <a href="sect0001.html#same_union"><span class="toc_ref">1.2</span> <span class="toc_entry">Basic Union Identities</span></a>
+ </li>
+<li class="">
+  <a href="sect0001.html#mem_biUnion"><span class="toc_ref">1.3</span> <span class="toc_entry">Finite Indexed Unions</span></a>
+ </li>
+<li class="">
+  <a href="sect0001.html#mem_inf"><span class="toc_ref">1.4</span> <span class="toc_entry">Finite Intersections</span></a>
+ </li>
+<li class="">
+  <a href="sect0001.html#alternating_sum_powerset"><span class="toc_ref">1.5</span> <span class="toc_entry">Powersets and Alternating Sums</span></a>
+ </li>
+<li class="">
+  <a href="sect0001.html#inclusion_exclusion"><span class="toc_ref">1.6</span> <span class="toc_entry">The Inclusion–Exclusion Principle</span></a>
+ </li>
+<li class="">
+  <a href="sect0001.html#a0000000017"><span class="toc_ref">1.7</span> <span class="toc_entry">Proof Strategy</span></a>
+ </li>
+
+  </ul>
+ </li>
+</ul>
+</nav>
+
+<div class="content">
+<div class="content-wrapper">
+
+
+<div class="main-text">
+<h1 id="a0000000002">1 The Inclusion–Exclusion Principle</h1>
+<h1 id="a0000000003">1.1 Overview</h1>
+<p>The goal of this project is to formalize the inclusion–exclusion principle for finite sets in Lean 4 using Mathlib. </p>
+<p>Given a finite indexed family of finite sets </p>
+<div class="displaymath" id="a0000000004">
+  \[  \{ S_b\} _{b \in s},  \]
+</div>
+<p> the inclusion–exclusion principle expresses the cardinality of the union </p>
+<div class="displaymath" id="a0000000005">
+  \[  \bigcup _{b \in s} S_b  \]
+</div>
+<p> as an alternating sum over intersections of subfamilies. </p>
+<p>We formalize this statement using finite sets (‘Finset‘) and prove the result by induction on the indexing set. </p>
+<p>The full formal statement is given in Lean as: </p>
+<p>InclusionExclusion.lean, inclusion_exclusion </p>
+<p>— </p>
+<h1 id="same_union">1.2 Basic Union Identities</h1>
+<p>We begin with elementary cardinality results for unions and intersections. </p>
+<p>[Two-set union formula] For finite sets \(A,B\), </p>
+<div class="displaymath" id="a0000000006">
+  \[  |A \cup B| = |A| + |B| - |A \cap B|.  \]
+</div>
+
+<p>Union.lean, card_union_two </p>
+<p>— </p>
+<p>[Disjoint union] If \(A\) and \(B\) are disjoint, then </p>
+<div class="displaymath" id="a0000000007">
+  \[  |A \cup B| = |A| + |B|.  \]
+</div>
+
+<p>Union.lean, disjoint_union </p>
+<p>— </p>
+<p>[Idempotent union] For every finite set \(A\), </p>
+<div class="displaymath" id="a0000000008">
+  \[  |A \cup A| = |A|.  \]
+</div>
+
+<p>Union.lean, same_union </p>
+<p>— </p>
+<h1 id="mem_biUnion">1.3 Finite Indexed Unions</h1>
+<p>We next establish structural lemmas for finite indexed unions. </p>
+<p> Let \(s\) be a finite index set and \(b \notin s\). Then </p>
+<div class="displaymath" id="a0000000009">
+  \[  \bigcup _{x \in \{ b\}  \cup s} S_x = S_b \cup \bigcup _{x \in s} S_x.  \]
+</div>
+
+<p>InclusionExclusion.lean, biUnion_insert </p>
+<p>— </p>
+
+<div class="displaymath" id="a0000000010">
+  \[  \bigcup _{x \in \varnothing } S_x = \varnothing .  \]
+</div>
+
+<p>InclusionExclusion.lean, biUnion_empty </p>
+<p>— </p>
+<p> For \(x\), </p>
+<div class="displaymath" id="a0000000011">
+  \[  x \in \bigcup _{b \in s} S_b \iff \exists b \in s,\  x \in S_b.  \]
+</div>
+
+<p>InclusionExclusion.lean, mem_biUnion </p>
+<p>— </p>
+<h1 id="mem_inf">1.4 Finite Intersections</h1>
+<p>We interpret intersections as infima in the lattice structure on ‘Finset‘. </p>
+<p> For finite \(T\), </p>
+<div class="displaymath" id="a0000000012">
+  \[  x \in \bigcap _{b \in T} S_b \iff \forall b \in T,\  x \in S_b.  \]
+</div>
+
+<p>InclusionExclusion.lean, mem_inf_iff_forall </p>
+<p>— </p>
+<h1 id="alternating_sum_powerset">1.5 Powersets and Alternating Sums</h1>
+<p>We now study subsets of finite sets and alternating combinatorial sums. </p>
+<p> For finite sets \(T,s\), </p>
+<div class="displaymath" id="a0000000013">
+  \[  T \in \mathcal P(s) \iff T \subseteq s.  \]
+</div>
+
+<p>InclusionExclusion.lean, mem_powerset </p>
+<p>— </p>
+<p> If \(s \neq \varnothing \), then </p>
+<div class="displaymath" id="a0000000014">
+  \[  \sum _{T \subseteq s} (-1)^{|T|} = 0.  \]
+</div>
+
+<p>InclusionExclusion.lean, alternating_sum_powerset </p>
+<p>— </p>
+<h1 id="inclusion_exclusion">1.6 The Inclusion–Exclusion Principle</h1>
+<p>We now prove the main theorem. </p>
+<p>[Inclusion–Exclusion] Let \(s\) be a finite index set and let </p>
+<div class="displaymath" id="a0000000015">
+  \[  S : \beta \to \mathrm{Finset}(\alpha )  \]
+</div>
+<p> be a finite family of finite sets. Then </p>
+<div class="displaymath" id="a0000000016">
+  \[  \left| \bigcup _{b \in s} S_b \right| = \sum _{\varnothing \neq T \subseteq s} (-1)^{|T|+1} \left| \bigcap _{b \in T} S_b \right|.  \]
+</div>
+
+<p>InclusionExclusion.lean, inclusion_exclusion </p>
+<p>— </p>
+<h1 id="a0000000017">1.7 Proof Strategy</h1>
+<p>The proof proceeds by induction on the finite index set \(s\), using: </p>
+<ul class="itemize">
+  <li><p>the two-set union formula (<a href="sect0001.html#same_union">1.2</a>), </p>
+</li>
+  <li><p>structural lemmas on ‘biUnion‘, </p>
+</li>
+  <li><p>and combinatorial cancellation in alternating sums over subsets. </p>
+</li>
+</ul>
+
+</div> <!--main-text -->
+</div> <!-- content-wrapper -->
+</div> <!-- content -->
+</div> <!-- wrapper -->
+
+<nav class="prev_up_next">
+  <a href="index.html" title="FinalProject"><svg  class="icon icon-arrow-left "><use xlink:href="symbol-defs.svg#icon-arrow-left"></use></svg>
+</a>
+  <a href="index.html" title="FinalProject"><svg  class="icon icon-arrow-up "><use xlink:href="symbol-defs.svg#icon-arrow-up"></use></svg>
+</a>
+</nav>
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/plastex.js"></script>
+<script type="text/javascript" src="js/svgxuse.js"></script>
+</body>
+</html>

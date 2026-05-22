@@ -1,7 +1,190 @@
-% In this file you should put the actual content of the blueprint.
-% It will be used both by the web and the print version.
-% It should *not* include the \begin{document}
-%
-% If you want to split the blueprint content into several files then
-% the current file can be a simple sequence of \input. Otherwise It
-% can start with a \section or \chapter for instance.
+\chapter{The Inclusion--Exclusion Principle}
+
+\section{Overview}
+
+The goal of this project is to formalize the inclusion--exclusion principle
+for finite sets in Lean 4 using Mathlib.
+
+Given a finite indexed family of finite sets
+\[
+\{S_b\}_{b \in s},
+\]
+the inclusion--exclusion principle expresses the cardinality of the union
+\[
+\bigcup_{b \in s} S_b
+\]
+as an alternating sum over intersections of subfamilies.
+
+We formalize this statement using finite sets (`Finset`) and prove the result
+by induction on the indexing set.
+
+The full formal statement is given in Lean as:
+
+\lean{InclusionExclusion.lean, inclusion_exclusion}
+
+---
+
+\section{Basic Union Identities}
+
+We begin with elementary cardinality results for unions and intersections.
+
+\begin{lemma}[Two-set union formula]\label{card_union_two}
+For finite sets \(A,B\),
+\[
+|A \cup B|
+=
+|A| + |B| - |A \cap B|.
+\]
+\end{lemma}
+
+\lean{Union.lean, card_union_two}
+
+---
+
+\begin{lemma}[Disjoint union]\label{disjoint_union}
+If \(A\) and \(B\) are disjoint, then
+\[
+|A \cup B|
+=
+|A| + |B|.
+\]
+\end{lemma}
+
+\lean{Union.lean, disjoint_union}
+
+---
+
+\begin{lemma}[Idempotent union]\label{same_union}
+For every finite set \(A\),
+\[
+|A \cup A| = |A|.
+\]
+\end{lemma}
+
+\lean{Union.lean, same_union}
+
+---
+
+\section{Finite Indexed Unions}
+
+We next establish structural lemmas for finite indexed unions.
+
+\begin{lemma}\label{biUnion_insert}
+Let \(s\) be a finite index set and \(b \notin s\). Then
+\[
+\bigcup_{x \in \{b\} \cup s} S_x
+=
+S_b \cup \bigcup_{x \in s} S_x.
+\]
+\end{lemma}
+
+\lean{InclusionExclusion.lean, biUnion_insert}
+
+---
+
+\begin{lemma}\label{biUnion_empty}
+\[
+\bigcup_{x \in \varnothing} S_x = \varnothing.
+\]
+\end{lemma}
+
+\lean{InclusionExclusion.lean, biUnion_empty}
+
+---
+
+\begin{lemma}\label{mem_biUnion}
+For \(x\),
+\[
+x \in \bigcup_{b \in s} S_b
+\iff
+\exists b \in s,\ x \in S_b.
+\]
+\end{lemma}
+
+\lean{InclusionExclusion.lean, mem_biUnion}
+
+---
+
+\section{Finite Intersections}
+
+We interpret intersections as infima in the lattice structure on `Finset`.
+
+\begin{lemma}\label{mem_inf}
+For finite \(T\),
+\[
+x \in \bigcap_{b \in T} S_b
+\iff
+\forall b \in T,\ x \in S_b.
+\]
+\end{lemma}
+
+\lean{InclusionExclusion.lean, mem_inf_iff_forall}
+
+---
+
+\section{Powersets and Alternating Sums}
+
+We now study subsets of finite sets and alternating combinatorial sums.
+
+\begin{lemma}\label{mem_powerset}
+For finite sets \(T,s\),
+\[
+T \in \mathcal P(s)
+\iff
+T \subseteq s.
+\]
+\end{lemma}
+
+\lean{InclusionExclusion.lean, mem_powerset}
+
+---
+
+\begin{lemma}\label{alternating_sum_powerset}
+If \(s \neq \varnothing\), then
+\[
+\sum_{T \subseteq s} (-1)^{|T|}
+=
+0.
+\]
+\end{lemma}
+
+\lean{InclusionExclusion.lean, alternating_sum_powerset}
+
+---
+
+\section{The Inclusion--Exclusion Principle}
+
+We now prove the main theorem.
+
+\begin{theorem}[Inclusion--Exclusion]\label{inclusion_exclusion}
+Let \(s\) be a finite index set and let
+\[
+S : \beta \to \mathrm{Finset}(\alpha)
+\]
+be a finite family of finite sets. Then
+\[
+\left|
+\bigcup_{b \in s} S_b
+\right|
+=
+\sum_{\varnothing \neq T \subseteq s}
+(-1)^{|T|+1}
+\left|
+\bigcap_{b \in T} S_b
+\right|.
+\]
+\end{theorem}
+
+\lean{InclusionExclusion.lean, inclusion_exclusion}
+
+---
+
+\section{Proof Strategy}
+
+The proof proceeds by induction on the finite index set \(s\),
+using:
+\begin{itemize}
+\item the two-set union formula (\ref{card_union_two}),
+\item structural lemmas on `biUnion`,
+\item and combinatorial cancellation in alternating sums over subsets.
+\end{itemize}

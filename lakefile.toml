@@ -3,21 +3,18 @@ version = "0.1.0"
 defaultTargets = ["finalproject"]
 
 [[require]]
-name = "mathlib"
-scope = "leanprover-community"
-
-
-[[require]]
 name = "checkdecls"
 git = "https://github.com/PatrickMassot/checkdecls.git"
-
-[[require]]
-name = "«doc-gen4»"
-git = "https://github.com/leanprover/doc-gen4"
-rev = "main"
-[[lean_lib]]
-name = "FinalProject"
 
 [[lean_exe]]
 name = "finalproject"
 root = "Main"
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.30.0-rc2"
+
+[[require]]
+name = "leanblueprint"
+git = "https://github.com/PatrickMassot/leanblueprint"
